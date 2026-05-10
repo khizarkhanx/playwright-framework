@@ -5,14 +5,14 @@ const password = process.env.PASSWORD || '';
 
 test.describe('Login Tests', () => {
 
-  test('Simple Login Test', async ({ loginPage }) => {
+  test('Simple Login Test @smoke', async ({ loginPage }) => {
     await loginPage.navigate();
     await loginPage.clickLoginLink();
     await loginPage.login(userName, password);
     await loginPage.verifyLoginPageHeader();
   });
 
-  test('Negative Test - Invalid Username ', async ({ loginPage }) => {
+  test('Negative Test - Invalid Username @regression', async ({ loginPage }) => {
     await loginPage.navigate();
     await loginPage.clickLoginLink();
     await loginPage.login('wrongUser@abc.com', password);
@@ -20,7 +20,7 @@ test.describe('Login Tests', () => {
     await expect(loginPage.errorMsg).toHaveText('Your email or password is incorrect!');
   });
 
-  test('Negative Test - Invalid Password', async ({ loginPage }) => {
+  test('Negative Test - Invalid Password @regression', async ({ loginPage }) => {
     await loginPage.navigate();
     await loginPage.clickLoginLink();
     await loginPage.login(userName, 'wrongPass');

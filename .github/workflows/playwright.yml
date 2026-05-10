@@ -25,3 +25,22 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
+
+  workflow_dispatch:
+
+    inputs:
+
+      environment:
+        description: 'Select Environment'
+        required: true
+        default: 'qa'
+
+      browser:
+        description: 'Select Browser'
+        required: true
+        default: 'chromium'
+
+      testTag:
+        description: 'Enter Test Tag'
+        required: false
+        default: '@smoke'

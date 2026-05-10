@@ -5,6 +5,18 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Test type to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - smoke
+          - regression
+          - login
 
 jobs:
   test:
@@ -31,7 +43,16 @@ jobs:
           USER_NAME: ${{ secrets.TEST_USER }}
           PASSWORD: ${{ secrets.TEST_PASSWORD }}
           BASE_URL: ${{ secrets.TEST_BASE_URL }}
-        run: npx playwright test
+        run: |
+          if [ "${{ github.event.inputs.test_type }}" == "smoke" ]; then
+            npx playwright test --grep "@smoke"
+          elif [ "${{ github.event.inputs.test_type }}" == "regression" ]; then
+            npx playwright test --grep "@regression"
+          elif [ "${{ github.event.inputs.test_type }}" == "login" ]; then
+            npx playwright test tests/login/
+          else
+            npx playwright test
+          fi
 
       - name: Upload HTML Report
         uses: actions/upload-artifact@v3
