@@ -20,7 +20,7 @@ export default defineConfig({
     baseURL: process.env.BASE_URL,
 
     // Headless in CI, headed locally
-    headless: process.env.CI ? true : false,
+    headless: true, // Force headless for CI stability
 
     // Capture screenshot only on failure
     screenshot: 'only-on-failure',
