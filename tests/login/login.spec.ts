@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixture/loginFixture/login-lib';
 
-const userName = process.env.USER_NAME || '';
+const userName = process.env.USER_NAME || process.env.USERNAME || '';
 const password = process.env.PASSWORD || '';
 
 test.describe('Login Tests', () => {
