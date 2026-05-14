@@ -57,7 +57,7 @@ jobs:
         run: |
           echo "Running tests with browser: ${{ github.event.inputs.browser }}"
           echo "Test tag: ${{ github.event.inputs.testTag }}"
-          npx playwright test --project=${{ github.event.inputs.browser }} --grep "${{ github.event.inputs.testTag }}" --headed=false
+          npx playwright test --project=${{ github.event.inputs.browser }} --grep "${{ github.event.inputs.testTag }}"
         env:
           ENV: ${{ github.event.inputs.environment }}
           CI: true
