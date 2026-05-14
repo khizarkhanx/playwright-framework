@@ -55,10 +55,13 @@ jobs:
 
       - name: Run Playwright tests
         run: |
-          npx playwright test --project=${{ github.event.inputs.browser }} --grep "${{ github.event.inputs.testTag }}"
+          echo "Running tests with browser: ${{ github.event.inputs.browser }}"
+          echo "Test tag: ${{ github.event.inputs.testTag }}"
+          npx playwright test --project=${{ github.event.inputs.browser }} --grep "${{ github.event.inputs.testTag }}" --headed=false
         env:
           ENV: ${{ github.event.inputs.environment }}
           CI: true
+          HEADLESS: true
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
