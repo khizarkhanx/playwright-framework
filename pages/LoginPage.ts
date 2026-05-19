@@ -33,9 +33,9 @@ export class LoginPage {
     await this.loginLink.click();
   } 
 
-  async enterUsername(username: string) {
+  async enterUsername(userName: string) {
     await this.page.waitForLoadState('networkidle');
-    await this.usernameInput.fill(username);
+    await this.usernameInput.fill(userName);
   }
 
   async enterPassword(password: string) {
@@ -46,8 +46,8 @@ export class LoginPage {
     await this.submitBtn.click();
   }
 
-  async login(username: string, password: string) {
-    await this.enterUsername(username);
+  async login(userName: string, password: string) {
+    await this.enterUsername(userName);
     await this.enterPassword(password);
     await this.clickLogin();
   }
@@ -55,5 +55,12 @@ export class LoginPage {
   async verifyLoginPageHeader() {
     await this.page.waitForLoadState('networkidle');
     await expect(this.loginPageHeader).toBeVisible();
+  }
+
+  async navigateAndLogin(userName: string, password: string) {
+    await this.navigate();
+    await this.clickLoginLink();
+    await this.login(userName, password);
+    await this.verifyLoginPageHeader();
   }
 } 
