@@ -1,5 +1,5 @@
-import { test } from '../../fixture/categoriesFixture/categories-lib';
-    import { userName, password } from '../../data/constants';
+import { test } from "@fixture/categoriesFixture/categories-lib";
+import { userName, password } from "@data/constants";
 
 const categoryType = ['Women', 'Men', 'Kids'];
 const subCategories1 = ['Dress', 'Tops', 'Saree'];

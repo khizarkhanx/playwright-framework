@@ -1,19 +1,18 @@
-name: Playwright Tests
+name: Enterprise Playwright Automation
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
   workflow_dispatch:
     inputs:
-
       environment:
-        description: 'Select Environment'
+        description: Select Environment
         required: true
-        default: 'qa'
+        default: qa
         type: choice
         options:
           - qa
@@ -21,9 +20,9 @@ on:
           - production
 
       browser:
-        description: 'Select Browser'
+        description: Select Browser
         required: true
-        default: 'chromium'
+        default: chromium
         type: choice
         options:
           - chromium
@@ -31,41 +30,117 @@ on:
           - webkit
 
       testTag:
-        description: 'Enter Test Tag'
+        description: UI Test Tag
         required: false
-        default: '@smoke'
+        default: "@smoke"
+
+      runAPI:
+        description: Run API Tests
+        required: true
+        default: true
+        type: boolean
+
+####################################################
+# UI TESTS
+####################################################
 
 jobs:
-  test:
-    timeout-minutes: 60
+
+  ui-tests:
+
+    name: UI Automation Tests
+
     runs-on: ubuntu-latest
 
+    timeout-minutes: 60
+
     steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: lts/*
+          node-version: 22
+          cache: npm
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
-        run: |
-          echo "Running tests with browser: ${{ github.event.inputs.browser }}"
-          echo "Test tag: ${{ github.event.inputs.testTag }}"
-          npx playwright test --project=${{ github.event.inputs.browser }} --grep "${{ github.event.inputs.testTag }}"
+      - name: Run UI Tests
         env:
           ENV: ${{ github.event.inputs.environment }}
           CI: true
           HEADLESS: true
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        run: |
+          echo "========== UI EXECUTION =========="
+          echo "Browser : ${{ github.event.inputs.browser }}"
+          echo "Tag     : ${{ github.event.inputs.testTag }}"
+
+          npx playwright test tests/ui \
+          --project=${{ github.event.inputs.browser }} \
+          --grep "${{ github.event.inputs.testTag }}"
+
+      - name: Upload UI Report
+        if: always()
+        uses: actions/upload-artifact@v4
+
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: UI-Report
+          path: playwright-report
+          retention-days: 30
+
+####################################################
+# API TESTS
+####################################################
+
+  api-tests:
+
+    name: API Automation Tests
+
+    if: ${{ github.event.inputs.runAPI == 'true' }}
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run API Tests
+        env:
+          ENV: ${{ github.event.inputs.environment }}
+          CI: true
+
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          API_USERNAME: ${{ secrets.API_USERNAME }}
+          API_PASSWORD: ${{ secrets.API_PASSWORD }}
+
+        run: |
+          echo "========== API EXECUTION =========="
+          npx playwright test tests/api
+
+      - name: Upload API Report
+        if: always()
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: API-Report
+          path: playwright-report
           retention-days: 30

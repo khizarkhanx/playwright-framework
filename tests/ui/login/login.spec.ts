@@ -1,5 +1,5 @@
-import { test, expect } from '../../fixture/loginFixture/login-lib';
-import { userName, password } from '../../data/constants';
+import { test, expect } from '@fixture/loginFixture/login-lib';
+import { userName, password } from '@data/constants';
 
 test.describe('Login Tests', () => {
 

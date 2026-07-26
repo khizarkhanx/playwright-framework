@@ -1,9 +1,24 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2020",
     "module": "commonjs",
+    "moduleResolution": "node",
+
     "strict": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+
+    "paths": {
+      "@fixture/*": ["./fixture/*"],
+      "@pages/*": ["./pages/*"],
+      "@data/*": ["./data/*"],
+      "@utils/*": ["./utils/*"]
+    },
+
     "types": ["node", "@playwright/test"]
-  }
+  },
+  "include": [
+    "**/*.ts"
+  ]
 }
